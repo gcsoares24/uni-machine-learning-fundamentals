@@ -1,0 +1,20 @@
+O Problema
+
+Pretende-se estudar se a eficiência académica dos estudantes depende apenas do volume de estudo ou se resulta de uma combinação entre foco, qualidade de descanso, equilíbrio digital e bem-estar geral.
+
+Variáveis-Alvo (y)
+
+Cenário de Regressão:
+
+focus_index
+
+Cenário de Classificação:
+
+exam_score transformado em variável binária
+Exemplo:
+1 = desempenho académico elevado
+0 = desempenho académico normal/baixo
+Stakeholders
+Estudantes, porque o tema ajuda a perceber se mais horas de estudo significam realmente melhores resultados.
+Mentores e tutores, porque podem recomendar estratégias de estudo mais eficientes.
+Serviços de apoio ao sucesso académico, porque podem promover intervenções baseadas em hábitos e não apenas em carga horária.
