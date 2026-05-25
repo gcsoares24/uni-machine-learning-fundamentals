@@ -1,0 +1,15 @@
+
+Nesta fase, foram estabelecidos modelos de referência para definir o desempenho, focando em algoritmos interpretáveis antes da transição para abordagens mais complexas.
+
+\subsection{Regression Task}
+Para a estimativa do \texttt{focus\_index}, utilizou-se a Regressão Linear como modelo base. A escolha justifica-se pela necessidade de compreender a relação direta entre hábitos de estudo e capacidade de foco. Como complemento, aplicou-se uma Árvore de Decisão (\texttt{max\_depth=5}) para verificar se existem relações não lineares simples que o modelo linear possa omitir. A comparação quantitativa validou a Regressão Linear como o modelo de referência mais estável.
+
+\subsection{Classification Task}
+Para a tarefa de classificação (\texttt{high\_exam\_score}), implementou-se a Regressão Logística e uma Árvore de Decisão. O modelo de Regressão Logística foi configurado com \texttt{class\_weight="balanced"} para compensar o desequilíbrio das classes ($\approx 25\%$ de positivos). Este modelo revelou-se a \textit{baseline} de eleição, demonstrando uma capacidade discriminativa superior face à árvore de decisão, que apresentou sinais de \textit{overfitting} nos dados de treino.
+
+\subsection{Evaluation Metrics}
+As métricas de sucesso foram definidas para permitir uma avaliação rigorosa:
+\begin{itemize}
+    \item \textbf{Regressão:} O \textit{Root Mean Squared Error} (RMSE) foi a métrica primária, dada a penalização mais severa em erros elevados. O \textit{Mean Absolute Error} (MAE) serviu como métrica secundária para uma interpretação direta do erro médio.
+    \item \textbf{Classificação:} O \textit{F1-score} foi selecionado como métrica primária para equilibrar \textit{precision} e \textit{recall} num cenário de classes desbalanceadas. A \textit{ROC-AUC} foi utilizada como métrica secundária para avaliar a capacidade discriminativa do modelo independentemente do \textit{threshold} de decisão.
+\end{itemize}

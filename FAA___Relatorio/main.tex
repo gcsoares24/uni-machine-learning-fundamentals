@@ -1,0 +1,105 @@
+\documentclass[sigconf]{acmart}
+
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\title[Academic Efficiency]{Academic Efficiency: Studying Better, Not Just More}
+\subtitle{FAA - 2 Semester - 25/26 - Grupo x}
+
+\author{Guilherme Soares}
+\affiliation{%
+  \institution{Faculty of Sciences of the University of Lisbon}
+  \city{Lisbon}
+  \country{Portugal}}
+\email{fc62372@ciencias.ulisboa.pt}
+
+\author{Vitória Correia}
+\affiliation{%
+  \institution{Faculty of Sciences of the University of Lisbon}
+  \city{Lisbon}
+  \country{Portugal}}
+\email{fc62211@ciencias.ulisboa.pt}
+
+\author{Duarte Soares}
+\affiliation{%
+  \institution{Faculty of Sciences of the University of Lisbon}
+  \city{Lisbon}
+  \country{Portugal}}
+\email{fc62371@ciencias.ulisboa.pt}
+
+\renewcommand{\shortauthors}{Soares G., Correia V. and Soares D.}
+\acmConference{FAA - 2 Semester - 25/26 - Grupo x}{April 2026}{Lisbon, Portugal}
+\begin{document}
+
+\begin{teaserfigure}
+  \includegraphics[width=\textwidth]{imagens/teaser.jpeg}
+  \caption{Person struggling to study and studying happily (AI Generated), 2026.}
+  \Description{A comparison between a stressed student and a focused, happy student studying.}
+\end{teaserfigure}
+
+
+\begin{abstract}
+This project investigates academic efficiency in higher education, with the goal of understanding whether student success depends mainly on the amount of study time or on a broader combination of focus, rest quality, digital habits, and general well-being. Using a multidimensional student dataset, we define two complementary prediction tasks. The regression task aims to estimate students \texttt{focus\_index}, while the classification task predicts whether a student is likely to achieve a high \texttt{exam\_score}. 
+
+To support these tasks, the data is preprocessed through a structured pipeline that handles missing values, categorical encoding, and feature scaling for mixed-type variables. Baseline interpretable models are first evaluated, followed by more complex approaches and hyperparameter optimization. In addition, unsupervised clustering is used to identify latent student profiles, and model interpretability techniques are applied to explain the most influential factors behind predictions. 
+
+The project seeks to provide insight into how study-related and lifestyle-related behaviors contribute to academic efficiency, offering potential value for students, tutors, and academic support services.
+\end{abstract}
+
+\maketitle
+
+\ccsdesc[500]{Computing methodologies~Machine learning}
+\ccsdesc[300]{Computing methodologies~Supervised learning}
+\ccsdesc[300]{Computing methodologies~Cluster analysis}
+\ccsdesc[100]{Information systems~Data mining}
+
+\keywords{academic efficiency, machine learning, supervised learning, regression, classification, clustering, student performance, focus prediction}
+
+% =========================
+% START OF REPORT
+% =========================
+
+\section{Introduction}
+\input{component/introduction}
+
+
+\section{Problem Definition}
+\input{component/problemDefinition}
+
+
+\section{Data Preprocessing Pipeline}
+\input{component/dataPreprocessing}
+
+\section{Baseline Models}
+\input{component/baselineModels}
+
+\section{Feature Engineering and Selection}
+
+\section{Advanced Models and Hyperparameter Tuning}
+
+\subsection{Model Selection}
+
+\subsection{Hyperparameter Optimization}
+
+
+\section{Unsupervised Learning (Clustering)}
+\input{component/Clustering}
+
+\section{Model Interpretability}
+
+\section{Error Analysis}
+
+\section{Results and Discussion}
+
+\section{Conclusion}
+\input{component/conclution}
+
+% =========================
+% BIBLIOGRAPHY
+% =========================
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+
+\end{document}

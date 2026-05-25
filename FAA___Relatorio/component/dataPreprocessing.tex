@@ -1,0 +1,186 @@
+\subsection{Handling Missing Values}
+
+The dataset used in this project contains missing values in both numerical and categorical features, which must be handled before training any machine learning model. Since most algorithms do not natively support missing data, leaving these values untreated could lead to errors or unreliable results, as discussed in the statistical learning literature \cite{hastie2009overview}.
+
+Several strategies were considered, such as removing rows with missing values, discarding incomplete features, or relying on algorithms that can tolerate missing data. However, removing rows would reduce the amount of available data and could eliminate relevant patterns, while removing features might discard useful predictive information. For this reason, these alternatives were considered less appropriate for the present scenario.
+
+Instead, a data imputation strategy was adopted in order to preserve the dataset while providing plausible estimates for missing values. The method was defined according to the type of feature:
+
+\begin{itemize}
+    \item \textbf{Numerical Features:} Missing values were imputed using the median. This choice is appropriate because the median is more robust to extreme values and skewed distributions, which are common in real-world datasets \cite{hastie2009overview}.
+    
+    \item \textbf{Categorical Features:} Missing values were imputed using the most frequent category (mode), ensuring that the replacement remains consistent with the observed distribution of each variable.
+\end{itemize}
+
+Although an initial cleaning step was carried out for exploratory and descriptive purposes, the final imputation process used for modelling was implemented inside a preprocessing pipeline with \textit{SimpleImputer}. This ensures that imputation parameters are learned only from the training data during cross-validation and then applied consistently to validation or test data, preventing data leakage. This practice follows standard recommendations for model evaluation procedures \cite{hastie2009model_assessment}.
+
+\subsection{Categorical Encoding}
+
+The dataset contains several categorical variables that must be converted into numerical format so they can be used by machine learning algorithms. Two main encoding approaches were considered: ordinal encoding and one-hot encoding.
+
+Since the categorical features in this dataset do not have a natural order, ordinal encoding would introduce artificial relationships between categories. Therefore, one-hot encoding was selected as the most suitable strategy.
+
+Using \textit{OneHotEncoder}, each category is transformed into a binary indicator variable, avoiding the introduction of any implicit ranking between categories. This approach is consistent with standard practices in statistical learning, where preserving the independence of categorical levels is important for model correctness \cite{hastie2009overview}.
+
+In addition, the encoder was configured with \texttt{handle\_unknown="ignore"}, which improves robustness by allowing unseen categories in validation or test data to be processed without errors.
+
+While one-hot encoding increases the dimensionality of the feature space, this trade-off is acceptable because it preserves the meaning of categorical information and supports the use of a broad range of machine learning models. This effect is related to the challenges of high-dimensional data discussed in the literature \cite{hastie2009high_dimensional}.
+
+\subsection{Feature Scaling}
+
+Feature scaling is important to ensure that numerical variables with different ranges do not disproportionately influence the learning process. This is especially relevant for algorithms that are sensitive to feature magnitude, such as support vector machines and regression-based methods, where distances and coefficient magnitudes directly affect the model \cite{hastie2009linear_regression}.
+
+In this project, numerical features were scaled using \textit{RobustScaler}. Unlike standard normalization methods based on the mean and standard deviation, \textit{RobustScaler} centers the data using the median and scales it according to the interquartile range (IQR). This makes it more robust to outliers and better suited to datasets where numerical variables may contain extreme values or asymmetric distributions.
+
+Scaling was applied only to numerical features, while categorical features were left unchanged after one-hot encoding. As with the other preprocessing steps, scaling was integrated into the pipeline so that all transformation parameters are estimated exclusively from the training data. This guarantees methodological correctness, prevents data leakage, and ensures consistency across all cross-validation folds \cite{hastie2009model_assessment}.
+
+Overall, the preprocessing pipeline provides a structured and reproducible way of transforming the data, combining imputation, categorical encoding, and robust scaling into a single workflow suitable for fair and reliable model evaluation.
+
+\subsection{Comparison of the Dataset Before and After Preprocessing}
+
+To evaluate the impact of the preprocessing pipeline, a detailed comparison was conducted between the dataset before and after transformation. This analysis focuses on dataset dimensionality, missing-value treatment, and the structure of the resulting feature space.
+
+Before preprocessing, the dataset contained 5000 instances and 16 features. A total of 2150 missing values were identified across both numerical and categorical variables. After applying the preprocessing pipeline, all missing values were handled through imputation, and the dataset was transformed into a fully numerical representation with 22 features.
+
+The number of instances remained unchanged, indicating that no observations were removed during preprocessing. The increase in dimensionality is explained by the application of one-hot encoding to categorical variables, which expands the feature space in exchange for improved representational capacity \cite{hastie2009high_dimensional}.
+
+\begin{table}[t]
+\centering
+\caption{Dataset structure before and after preprocessing}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Stage} & \textbf{Rows} & \textbf{Columns} \\
+\midrule
+Before preprocessing & 5000 & 16 \\
+After preprocessing  & 5000 & 22 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Missing values were present in several variables prior to preprocessing, particularly in \textit{mental\_health\_score}, \textit{caffeine\_intake\_mg}, and \textit{screen\_time\_hours}. After applying median imputation for numerical variables and mode imputation for categorical variables, all missing values were successfully removed.
+
+\begin{table}[t]
+\centering
+\caption{Missing values before and after preprocessing}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Feature} & \textbf{Before} & \textbf{After} \\
+\midrule
+gender & 150 & 0 \\
+academic\_level & 100 & 0 \\
+social\_media\_hours & 250 & 0 \\
+screen\_time\_hours & 400 & 0 \\
+caffeine\_intake\_mg & 500 & 0 \\
+mental\_health\_score & 750 & 0 \\
+\midrule
+\textbf{Total} & \textbf{2150} & \textbf{0} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The categorical variables contain a small number of distinct categories, making them suitable for one-hot encoding.
+
+\begin{table}[t]
+\centering
+\caption{Summary of categorical features before preprocessing}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Variable} & \textbf{Count} & \textbf{Missing} & \textbf{Unique} & \textbf{Mode} \\
+\midrule
+gender & 4850 & 150 & 3 & Male \\
+academic\_level & 4900 & 100 & 3 & Postgraduate \\
+internet\_quality & 5000 & 0 & 3 & Good \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+After preprocessing, categorical variables were transformed using one-hot encoding, resulting in binary indicator features.
+
+\begin{table*}[t]
+\centering
+\caption{Categorical features after preprocessing (one-hot encoded)}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Variable} & \textbf{Count} & \textbf{Missing} & \textbf{Unique} & \textbf{Mode} \\
+\midrule
+cat\_\_gender\_Female & 5000 & 0 & 2 & 0 \\
+cat\_\_gender\_Male & 5000 & 0 & 2 & 0 \\
+cat\_\_gender\_Other & 5000 & 0 & 2 & 0 \\
+cat\_\_academic\_level\_High School & 5000 & 0 & 2 & 0 \\
+cat\_\_academic\_level\_Postgraduate & 5000 & 0 & 2 & 0 \\
+cat\_\_academic\_level\_Undergraduate & 5000 & 0 & 2 & 0 \\
+cat\_\_internet\_quality\_Average & 5000 & 0 & 2 & 0 \\
+cat\_\_internet\_quality\_Good & 5000 & 0 & 2 & 0 \\
+cat\_\_internet\_quality\_Poor & 5000 & 0 & 2 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Each encoded feature contains only values in $\{0,1\}$, indicating the absence or presence of a given category. The mode of each variable is 0, reflecting that for each observation, only one category per original feature is active.
+
+\begin{table*}[t]
+\centering
+\caption{Summary of numerical features before preprocessing}
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Variable} & \textbf{Count} & \textbf{Missing} & \textbf{Mean} & \textbf{Std} & \textbf{Min} & \textbf{Median} & \textbf{Max} \\
+\midrule
+age & 5000 & 0 & 20.520 & 2.870 & 16.0 & 20.000 & 25.00 \\
+study\_hours & 5000 & 0 & 4.540 & 1.822 & 0.0 & 4.530 & 11.84 \\
+self\_study\_hours & 5000 & 0 & 2.479 & 1.178 & 0.0 & 2.480 & 7.41 \\
+online\_classes\_hours & 5000 & 0 & 2.012 & 0.984 & 0.0 & 2.010 & 6.00 \\
+social\_media\_hours & 4750 & 250 & 2.995 & 1.467 & 0.0 & 2.975 & 8.28 \\
+gaming\_hours & 5000 & 0 & 1.565 & 1.111 & 0.0 & 1.490 & 5.64 \\
+sleep\_hours & 5000 & 0 & 7.016 & 1.164 & 4.0 & 7.010 & 10.00 \\
+screen\_time\_hours & 4600 & 400 & 6.986 & 2.476 & 1.0 & 6.955 & 15.30 \\
+exercise\_minutes & 5000 & 0 & 74.536 & 42.932 & 0.0 & 75.000 & 149.00 \\
+caffeine\_intake\_mg & 4500 & 500 & 251.127 & 143.810 & 0.0 & 251.000 & 499.00 \\
+part\_time\_job & 5000 & 0 & 0.498 & 0.500 & 0.0 & 0.000 & 1.00 \\
+upcoming\_deadline & 5000 & 0 & 0.501 & 0.500 & 0.0 & 1.000 & 1.00 \\
+mental\_health\_score & 4250 & 750 & 5.505 & 2.866 & 1.0 & 6.000 & 10.00 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+After preprocessing, numerical features were scaled using RobustScaler.
+
+\begin{table*}[t]
+\centering
+\caption{Numerical features after preprocessing}
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Variable} & \textbf{Count} & \textbf{Missing} & \textbf{Mean} & \textbf{Std} & \textbf{Min} & \textbf{Median} & \textbf{Max} \\
+\midrule
+num\_\_age & 5000 & 0 & 0.104 & 0.574 & -0.800 & 0.0 & 1.000 \\
+num\_\_study\_hours & 5000 & 0 & 0.004 & 0.726 & -1.805 & 0.0 & 2.912 \\
+num\_\_self\_study\_hours & 5000 & 0 & -0.001 & 0.723 & -1.521 & 0.0 & 3.025 \\
+num\_\_online\_classes\_hours & 5000 & 0 & 0.001 & 0.718 & -1.467 & 0.0 & 2.912 \\
+num\_\_social\_media\_hours & 5000 & 0 & 0.010 & 0.749 & -1.558 & 0.0 & 2.777 \\
+num\_\_gaming\_hours & 5000 & 0 & 0.045 & 0.665 & -0.892 & 0.0 & 2.485 \\
+num\_\_sleep\_hours & 5000 & 0 & 0.004 & 0.740 & -1.914 & 0.0 & 1.901 \\
+num\_\_screen\_time\_hours & 5000 & 0 & 0.009 & 0.759 & -1.903 & 0.0 & 2.666 \\
+num\_\_exercise\_minutes & 5000 & 0 & -0.006 & 0.572 & -1.000 & 0.0 & 0.987 \\
+num\_\_caffeine\_intake\_mg & 5000 & 0 & 0.001 & 0.623 & -1.146 & 0.0 & 1.132 \\
+num\_\_part\_time\_job & 5000 & 0 & 0.498 & 0.500 & 0.000 & 0.0 & 1.000 \\
+num\_\_upcoming\_deadline & 5000 & 0 & -0.499 & 0.500 & -1.000 & 0.0 & 0.000 \\
+num\_\_mental\_health\_score & 5000 & 0 & -0.084 & 0.530 & -1.000 & 0.0 & 0.800 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table}[h]
+\centering
+\caption{Feature composition after preprocessing}
+\begin{tabular}{lc}
+\toprule
+\textbf{Feature group} & \textbf{Number of features} \\
+\midrule
+Scaled numerical features & 13 \\
+One-hot encoded categorical features & 9 \\
+\midrule
+\textbf{Total transformed features} & \textbf{22} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Overall, the preprocessing pipeline produced a complete, numerically consistent, and machine-learning-ready dataset. The elimination of missing values, combined with appropriate encoding and scaling techniques, ensures that subsequent model evaluation is conducted on reliable and well-structured data.
